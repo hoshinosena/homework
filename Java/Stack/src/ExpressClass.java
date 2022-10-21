@@ -14,9 +14,8 @@ public class ExpressClass {
                 while (exp.charAt(++i) == ' ');
                 i--;
                 if (exp.charAt(++i) == '-' || exp.charAt(i) == '+')
-                    exp.insert(i--, '0');
-                else
-                    i--;
+                    exp.insert(i, '0');
+                i--;
             }
             else if (ch == ')') {
                 while (opor.peek() != '(')
@@ -39,8 +38,15 @@ public class ExpressClass {
                 else
                     opor.push(ch);
             else if (ch == '.' || '0' <= ch && ch <= '9') {
-                while (ch == '.' || ch == '!' || '0' <= ch && ch <= '9') {
+                while (ch == '.' || ch == '!' || ch == 'E' || '0' <= ch && ch <= '9') {
                     postexp += ch;
+                    if (ch == 'E') {
+                        ch = exp.charAt(++i);
+                        if (ch == '+' || ch == '-')
+                            postexp += ch;
+                        else
+                            ch = exp.charAt(--i);
+                    }
                     if (exp.length() == ++i)
                         break;
                     ch = exp.charAt(i);
@@ -144,7 +150,9 @@ public class ExpressClass {
                 if (ch == 'E') {
                     double E = 10;
                     ch = postexp.charAt(++i);
-                    if (ch == '-') {
+                    if (ch == '+')
+                        ch = postexp.charAt(++i);
+                    else if (ch == '-') {
                         E = 0.1;
                         ch = postexp.charAt(++i);
                     }
