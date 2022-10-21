@@ -11,6 +11,8 @@ public class ExpressClass {
             if (ch == ' ');
             else if (ch == '(') {
                 opor.push(ch);
+                while (exp.charAt(++i) == ' ');
+                i--;
                 if (exp.charAt(++i) == '-' || exp.charAt(i) == '+')
                     exp.insert(i--, '0');
                 else
@@ -63,14 +65,10 @@ public class ExpressClass {
                     String str1 = "";
                     double temp;
                     StackClass<Character> Match = new StackClass<>();
-                    while (ch != ')') {
+                    while (!Match.empty() || str1.equals("")) {
                         if (ch == '(')
                             Match.push(ch);
-                        str1 += ch;
-                        ch = exp.charAt(++i);
-                    }
-                    while (!Match.empty()) {
-                        if (ch == ')')
+                        else if (ch == ')')
                             Match.pop();
                         str1 += ch;
                         if (exp.length() == ++i)
@@ -141,7 +139,22 @@ public class ExpressClass {
                     while (!inversion.empty())
                         e = (e + inversion.pop()) / 10;
                 }
-                opand.push(d + e);
+                e += d;
+                d = 0;
+                if (ch == 'E') {
+                    double E = 10;
+                    ch = postexp.charAt(++i);
+                    if (ch == '-') {
+                        E = 0.1;
+                        ch = postexp.charAt(++i);
+                    }
+                    while ('0' <= ch && ch <= '9') {
+                        d = d * 10 + (ch - '0');
+                        ch = postexp.charAt(++i);
+                    }
+                    e *= Math.pow(E, d);
+                }
+                opand.push(e);
             }
             else if (ch == 'e' || ch == 'π') {
                 opand.push(ch == 'e' ? 2.7182818284 : 3.1415926535);
