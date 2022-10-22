@@ -38,7 +38,7 @@ public class ExpressClass {
                 else
                     opor.push(ch);
             else if (ch == '.' || '0' <= ch && ch <= '9') {
-                while (ch == '.' || ch == '!' || ch == 'E' || '0' <= ch && ch <= '9') {
+                while (ch == '.' || ch == '!' || ch == '%' || ch == 'E' || '0' <= ch && ch <= '9') {
                     postexp += ch;
                     if (ch == 'E') {
                         ch = exp.charAt(++i);
@@ -66,6 +66,10 @@ public class ExpressClass {
                     postexp += str + '#';
                     i--;
                 }
+                else if (str.equals("e)") || str.equals("π)")) {
+                    postexp += str.equals("e)") ? "e#" : "π#";
+                    i -= 2;
+                }
                 else if (str.equals("exp") || str.equals("log") || str.equals("ln") ||str.equals("sin") ||
                          str.equals("cos") || str.equals("tan")) {
                     String str1 = "";
@@ -84,9 +88,9 @@ public class ExpressClass {
                     if (str.equals("exp"))
                         temp = Math.exp(getValue(getPostexp(str1)));
                     else if (str.equals("log"))
-                        temp = Math.log(getValue(getPostexp(str1)));
+                        temp = Math.log10(getValue(getPostexp(str1)));
                     else if (str.equals("ln"))
-                        temp = Math.log(getValue(getPostexp(str1))) / Math.log(2.7182818284);
+                        temp = Math.log(getValue(getPostexp(str1)));
                     else if (str.equals("sin"))
                         temp = Math.sin(getValue(getPostexp(str1)));
                     else if (str.equals("cos"))
@@ -147,7 +151,11 @@ public class ExpressClass {
                 }
                 e += d;
                 d = 0;
-                if (ch == 'E') {
+                if (ch == '%') {
+                    e *= 0.01;
+                    i++;
+                }
+                else if (ch == 'E') {
                     double E = 10;
                     ch = postexp.charAt(++i);
                     if (ch == '+')
